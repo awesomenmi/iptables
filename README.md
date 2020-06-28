@@ -26,3 +26,15 @@ exit
 ```
 /vagrant/guest/knock.sh close
 ```
+
+## port-forwarding
+
+```
+ssh -i ~/.vagrant.d/insecure_private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null vagrant@127.0.0.1 -p 8001
+```
+Подключимся к inetRouter2:
+```
+ssh 192.168.254.1
+curl -I localhost:8080
+```
+
