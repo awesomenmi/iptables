@@ -18,10 +18,6 @@ MACHINES = {
         routes: [
             { dst: "192.168.0.0/16", src: "192.168.254.2", connection: "System eth1" },
         ],
-        extForwardedPorts: [{
-            guest: 80,
-            host: 8080,
-        }],
         router: true,
     },
     :centralRouter => {
@@ -66,10 +62,12 @@ Vagrant.configure("2") do |config|
                     systemctl start knockd
                 SHELL
             when "inetRouter2"
+		box.vm.network 'forwarded_port', guest: 8080, host: 8080, host_ip: '127.0.0.1'
                 box.vm.provision "shell", inline: <<-SHELL
-                    iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 192.168.0.2:8080
-                    iptables -t nat -A POSTROUTING --destination 192.168.0.2/32 -j SNAT --to-source 192.168.254.1
-                SHELL
+               	    sysctl net.ipv4.conf.all.forwarding=1
+		    iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth0 -j MASQUERADE
+		    iptables-restore < /vagrant/iptables_inetrouter2.rules
+		SHELL
             when "centralRouter"
                 box.vm.provision "shell", inline: <<-SHELL
                     yum install -y nmap
@@ -78,7 +76,6 @@ Vagrant.configure("2") do |config|
                 box.vm.provision "shell", inline: <<-SHELL
                     yum install -y epel-release
                     yum install -y nginx
-                    sed -i 's/80 default_server/8080 default_server/g' /etc/nginx/nginx.conf
                     systemctl enable --now nginx
                 SHELL
             end
