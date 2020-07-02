@@ -1,7 +1,9 @@
 # Фильтрация трафика 
 
 ```
+vagrant up
 chmod +x setup.sh guest/knock.sh disable-if-eth0.sh
+./setup.sh
 ```
 
 ## knocking port
