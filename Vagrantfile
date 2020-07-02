@@ -64,8 +64,8 @@ Vagrant.configure("2") do |config|
             when "inetRouter2"
 		box.vm.network 'forwarded_port', guest: 8080, host: 8080, host_ip: '127.0.0.1'
                 box.vm.provision "shell", inline: <<-SHELL
-               	    sysctl net.ipv4.conf.all.forwarding=1
-		    iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth0 -j MASQUERADE
+		    sysctl -w net.ipv4.conf.all.route_localnet=1
+                    sysctl net.ipv4.conf.all.forwarding=1
 		    iptables-restore < /vagrant/iptables_inetrouter2.rules
 		SHELL
             when "centralRouter"

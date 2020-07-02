@@ -11,7 +11,8 @@ COMMIT
 :INPUT ACCEPT [3:184]
 :OUTPUT ACCEPT [69:5342]
 :POSTROUTING ACCEPT [69:5342]
+-A POSTROUTING ! -d 192.168.0.0/16 -o eth0 -j MASQUERADE
 -A PREROUTING -d 10.0.2.15/32 -p tcp -m tcp --dport 8080 -j DNAT --to-destination 192.168.0.2:80
--A OUTPUT -d 10.0.2.15/32 -p tcp -m tcp --dport 80 -j DNAT --to-destination 192.168.0.2
+-A OUTPUT -d 127.0.0.1/32 -o lo -p tcp -m tcp --dport 8080 -j DNAT --to-destination 192.168.0.2:80
 -A POSTROUTING -d 192.168.0.2/32 -p tcp -m tcp --dport 80 -j SNAT --to-source 192.168.254.1
 COMMIT
